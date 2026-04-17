@@ -5,507 +5,525 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cherry Blossom Psychology</title>
   <style>
-    :root {
-      --text-main: #7f6774;
-      --text-soft: #8d7782;
-      --line: rgba(210, 183, 194, 0.55);
-      --glass: rgba(255, 245, 248, 0.34);
-      --glass-strong: rgba(255, 245, 248, 0.52);
-      --panel: rgba(255, 245, 248, 0.76);
-      --btn-start-1: #c8b6f0;
-      --btn-start-2: #d98dad;
-      --btn-soft: rgba(255, 248, 250, 0.72);
-      --btn-soft-border: rgba(221, 194, 204, 0.8);
-      --shadow: 0 18px 40px rgba(112, 78, 96, 0.18);
-      --shadow-soft: 0 10px 30px rgba(112, 78, 96, 0.12);
+    :root{
+      --text-main:#866b79;
+      --text-soft:#967d89;
+      --line:rgba(215,186,198,.55);
+      --glass:rgba(255,245,248,.18);
+      --glass-soft:rgba(255,245,248,.08);
+      --btn1:#cdbaf4;
+      --btn2:#d98fad;
+      --white-soft:rgba(255,250,251,.78);
+      --white-border:rgba(233,210,220,.7);
+      --shadow:0 16px 40px rgba(140,95,118,.16);
+      --shadow-soft:0 10px 28px rgba(140,95,118,.1);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
     }
 
-    html, body {
-      width: 100%;
-      height: 100%;
+    html,body{
+      width:100%;
+      height:100%;
     }
 
-    body {
-      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-      color: var(--text-main);
+    body{
+      font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      color:var(--text-main);
       background:
-        linear-gradient(rgba(255, 244, 248, 0.08), rgba(255, 244, 248, 0.08)),
-        url("0.png") center center / cover no-repeat;
-      overflow: hidden;
-      position: relative;
+        linear-gradient(rgba(255,244,248,.04), rgba(255,244,248,.04)),
+        url("./0.png") center center / cover no-repeat;
+      overflow:hidden;
+      position:relative;
     }
 
-    body::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to right, rgba(255, 244, 248, 0.38), rgba(255, 244, 248, 0.04) 58%, rgba(255, 244, 248, 0.02));
-      pointer-events: none;
-      z-index: 0;
+    body::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(
+          to right,
+          rgba(255,246,249,.26) 0%,
+          rgba(255,246,249,.16) 30%,
+          rgba(255,246,249,.08) 52%,
+          rgba(255,246,249,.02) 68%,
+          rgba(255,246,249,0) 100%
+        );
+      pointer-events:none;
+      z-index:0;
     }
 
-    .left-blur {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 40%;
-      height: 100%;
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      background: linear-gradient(to right, rgba(255, 245, 248, 0.34), rgba(255, 245, 248, 0.1) 72%, transparent);
-      z-index: 1;
-      pointer-events: none;
+    /* 更接近参考图的左侧雾化，而不是一整块硬玻璃板 */
+    .left-fog{
+      position:absolute;
+      left:0;
+      top:0;
+      width:48%;
+      height:100%;
+      backdrop-filter:blur(30px);
+      -webkit-backdrop-filter:blur(30px);
+      background:
+        linear-gradient(
+          to right,
+          rgba(255,246,249,.34) 0%,
+          rgba(255,246,249,.22) 35%,
+          rgba(255,246,249,.1) 68%,
+          rgba(255,246,249,0) 100%
+        );
+      -webkit-mask-image:linear-gradient(
+        to right,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,.96) 52%,
+        rgba(0,0,0,.45) 82%,
+        rgba(0,0,0,0) 100%
+      );
+      mask-image:linear-gradient(
+        to right,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,.96) 52%,
+        rgba(0,0,0,.45) 82%,
+        rgba(0,0,0,0) 100%
+      );
+      pointer-events:none;
+      z-index:1;
     }
 
-    .page {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      padding: 32px 46px 42px;
+    .page{
+      position:relative;
+      z-index:2;
+      width:100%;
+      height:100%;
+      padding:34px 42px 42px;
     }
 
-    .logo {
-      position: absolute;
-      left: 46px;
-      top: 34px;
-      font-size: 20px;
-      letter-spacing: 1px;
-      color: rgba(121, 99, 112, 0.82);
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .logo{
+      position:absolute;
+      left:46px;
+      top:34px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:19px;
+      font-weight:600;
+      letter-spacing:1px;
+      color:rgba(126,101,114,.82);
     }
 
-    .logo-box {
-      width: 22px;
-      height: 22px;
-      border: 2px solid rgba(121, 99, 112, 0.78);
-      border-radius: 7px;
-      display: inline-block;
-      position: relative;
+    .logo-box{
+      width:22px;
+      height:22px;
+      border:2px solid rgba(126,101,114,.74);
+      border-radius:7px;
+      position:relative;
+      display:inline-block;
     }
 
-    .logo-box::after {
-      content: "";
-      position: absolute;
-      inset: 4px;
-      border: 2px solid rgba(121, 99, 112, 0.5);
-      border-radius: 4px;
+    .logo-box::after{
+      content:"";
+      position:absolute;
+      inset:4px;
+      border:2px solid rgba(126,101,114,.45);
+      border-radius:4px;
     }
 
-    .content {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 40px;
+    .layout{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      position:relative;
     }
 
-    .left {
-      width: 430px;
-      margin-left: 44px;
-      margin-top: 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+    .left{
+      width:420px;
+      margin-left:86px;
+      margin-top:16px;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      position:relative;
     }
 
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      letter-spacing: 2px;
-      color: rgba(146, 119, 132, 0.82);
-      background: rgba(255, 245, 248, 0.36);
-      border: 1px solid rgba(233, 210, 219, 0.78);
-      padding: 11px 18px;
-      border-radius: 999px;
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow-soft);
-      margin-bottom: 28px;
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      padding:10px 18px;
+      border-radius:999px;
+      background:rgba(255,247,250,.34);
+      border:1px solid rgba(233,213,221,.72);
+      color:rgba(147,118,131,.8);
+      font-size:13px;
+      letter-spacing:2px;
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow-soft);
+      margin-bottom:28px;
     }
 
-    h1 {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 72px;
-      line-height: 0.95;
-      font-weight: 500;
-      color: #8d6f80;
-      letter-spacing: -1.6px;
-      margin-bottom: 26px;
-      position: relative;
+    h1{
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:68px;
+      line-height:.96;
+      font-weight:500;
+      letter-spacing:-1.2px;
+      color:#8c7180;
+      margin-bottom:22px;
+      position:relative;
     }
 
-    h1 .line2 {
-      display: block;
-      margin-top: 8px;
+    h1 .line2{
+      display:block;
+      margin-top:6px;
     }
 
-    .flower-swish {
-      position: absolute;
-      left: 118px;
-      bottom: -12px;
-      width: 210px;
-      height: 28px;
-      border-bottom: 2px solid rgba(226, 171, 194, 0.72);
-      border-radius: 0 0 180px 180px;
-      transform: rotate(-4deg);
-      opacity: 0.9;
+    .swish{
+      position:absolute;
+      left:116px;
+      bottom:-10px;
+      width:210px;
+      height:24px;
+      border-bottom:2px solid rgba(233,170,194,.62);
+      border-radius:0 0 160px 160px;
+      transform:rotate(-5deg);
+      opacity:.9;
     }
 
-    .flower-swish::after {
-      content: "✿";
-      position: absolute;
-      right: -12px;
-      top: 8px;
-      color: rgba(232, 165, 194, 0.9);
-      font-size: 24px;
+    .swish::after{
+      content:"✿";
+      position:absolute;
+      right:-10px;
+      top:7px;
+      font-size:22px;
+      color:rgba(232,165,192,.85);
     }
 
-    .desc {
-      font-size: 16px;
-      line-height: 1.65;
-      color: var(--text-soft);
-      margin-bottom: 18px;
-      max-width: 360px;
+    .desc{
+      font-size:17px;
+      line-height:1.65;
+      color:var(--text-soft);
+      max-width:330px;
+      margin-bottom:18px;
     }
 
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin: 18px 0 18px;
-      color: rgba(146, 119, 132, 0.78);
-      font-size: 15px;
+    .divider{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      color:rgba(152,125,137,.82);
+      font-size:15px;
+      margin:10px 0 14px;
     }
 
     .divider::before,
-    .divider::after {
-      content: "";
-      width: 72px;
-      height: 1px;
-      background: var(--line);
+    .divider::after{
+      content:"";
+      width:72px;
+      height:1px;
+      background:var(--line);
     }
 
-    .subtext {
-      color: var(--text-soft);
-      font-size: 15px;
-      margin-bottom: 26px;
+    .sub{
+      font-size:15px;
+      color:var(--text-soft);
+      margin-bottom:28px;
     }
 
-    .start-btn {
-      border: none;
-      cursor: pointer;
-      color: white;
-      font-size: 18px;
-      font-weight: 600;
-      padding: 16px 34px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--btn-start-1), var(--btn-start-2));
-      box-shadow: 0 16px 30px rgba(197, 149, 178, 0.32);
-      min-width: 232px;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      gap: 14px;
-      transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
-      margin-bottom: 28px;
+    .start-btn{
+      border:none;
+      cursor:pointer;
+      min-width:230px;
+      padding:16px 32px;
+      border-radius:999px;
+      color:#fff;
+      font-size:17px;
+      font-weight:600;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      background:linear-gradient(90deg,var(--btn1),var(--btn2));
+      box-shadow:0 14px 34px rgba(210,151,180,.25);
+      transition:.25s ease;
+      margin-bottom:28px;
     }
 
-    .start-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 22px 38px rgba(197, 149, 178, 0.38);
-      filter: brightness(1.03);
+    .start-btn:hover{
+      transform:translateY(-2px);
+      filter:brightness(1.03);
+      box-shadow:0 18px 40px rgba(210,151,180,.3);
     }
 
-    .start-btn .sparkle {
-      font-size: 17px;
-      opacity: 0.92;
+    .start-btn .sparkle{
+      font-size:16px;
+      opacity:.95;
     }
 
-    .action-row {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
+    .actions{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
     }
 
-    .soft-btn {
-      background: var(--btn-soft);
-      border: 1px solid var(--btn-soft-border);
-      color: #8c7280;
-      border-radius: 999px;
-      padding: 14px 22px;
-      font-size: 15px;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 186px;
-      justify-content: center;
-      backdrop-filter: blur(14px);
-      box-shadow: var(--shadow-soft);
+    .soft-btn{
+      min-width:184px;
+      padding:14px 22px;
+      border-radius:999px;
+      background:rgba(255,250,251,.78);
+      border:1px solid var(--white-border);
+      color:#8b7280;
+      font-size:15px;
+      font-weight:500;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      backdrop-filter:blur(12px);
+      box-shadow:var(--shadow-soft);
     }
 
-    .soft-btn .icon {
-      font-size: 16px;
-      opacity: 0.78;
+    .right{
+      flex:1;
+      height:100%;
+      position:relative;
     }
 
-    .right-side {
-      flex: 1;
-      height: 100%;
-      position: relative;
+    .bubble-tip{
+      position:absolute;
+      right:140px;
+      bottom:64px;
+      text-align:right;
+      color:rgba(255,243,247,.92);
+      text-shadow:0 2px 10px rgba(125,94,108,.14);
+      font-size:14px;
+      line-height:1.55;
     }
 
-    .bubble {
-      position: absolute;
-      right: 44px;
-      bottom: 38px;
-      width: 86px;
-      height: 86px;
-      border-radius: 50%;
-      background: rgba(255, 246, 249, 0.48);
-      border: 1px solid rgba(255, 238, 244, 0.78);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 12px 36px rgba(185, 145, 166, 0.28);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: transform 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
-      overflow: hidden;
+    .bubble-tip span{
+      display:block;
+      font-size:13px;
+      margin-top:4px;
+      opacity:.92;
     }
 
-    .bubble::before {
-      content: "";
-      position: absolute;
-      inset: -10px;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 245, 249, 0.4);
-      transform: scale(1);
-      animation: pulse 2.6s infinite ease-out;
+    .bubble{
+      position:absolute;
+      right:42px;
+      bottom:38px;
+      width:84px;
+      height:84px;
+      border:none;
+      border-radius:50%;
+      cursor:pointer;
+      background:rgba(255,246,249,.32);
+      border:1px solid rgba(255,240,244,.52);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      box-shadow:0 10px 30px rgba(185,145,166,.16);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:.22s ease;
+      overflow:hidden;
     }
 
-    .bubble:hover {
-      transform: scale(1.08);
-      background: rgba(255, 246, 249, 0.62);
-      box-shadow: 0 18px 42px rgba(185, 145, 166, 0.36);
+    .bubble::before{
+      content:"";
+      position:absolute;
+      inset:-8px;
+      border-radius:50%;
+      border:1px solid rgba(255,245,249,.34);
+      animation:pulse 2.6s infinite ease-out;
     }
 
-    .bubble:active {
-      transform: scale(0.96);
+    .bubble:hover{
+      transform:scale(1.08);
+      background:rgba(255,246,249,.42);
+      box-shadow:0 14px 34px rgba(185,145,166,.22);
     }
 
-    .bubble-icon {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      background: linear-gradient(180deg, rgba(255, 220, 230, 0.96), rgba(244, 188, 209, 0.95));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 24px;
-      box-shadow: inset 0 2px 8px rgba(255,255,255,0.35), 0 8px 16px rgba(218, 163, 185, 0.35);
-      z-index: 1;
+    .bubble:active{
+      transform:scale(.96);
     }
 
-    .bubble-tip {
-      position: absolute;
-      right: 146px;
-      bottom: 58px;
-      color: rgba(252, 243, 246, 0.95);
-      text-shadow: 0 2px 8px rgba(122, 88, 103, 0.2);
-      font-size: 15px;
-      line-height: 1.55;
-      text-align: right;
-      max-width: 170px;
+    .bubble-icon{
+      width:50px;
+      height:50px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg, rgba(255,220,230,.78), rgba(244,188,209,.72));
+      box-shadow:inset 0 2px 8px rgba(255,255,255,.28);
+      color:#fff;
+      font-size:22px;
+      z-index:1;
     }
 
-    .bubble-tip span {
-      display: block;
-      font-size: 13px;
-      opacity: 0.92;
-      margin-top: 4px;
+    .panel{
+      position:absolute;
+      right:64px;
+      bottom:140px;
+      width:332px;
+      border-radius:28px;
+      padding:22px 22px 20px;
+      background:rgba(255,244,247,.58);
+      border:1px solid rgba(255,240,244,.78);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      box-shadow:0 22px 48px rgba(168,128,149,.16);
+      color:#866b79;
+      opacity:0;
+      transform:translateY(24px) scale(.96);
+      pointer-events:none;
+      transition:opacity .32s ease, transform .32s ease;
     }
 
-    .treehole-panel {
-      position: absolute;
-      right: 66px;
-      bottom: 148px;
-      width: 330px;
-      border-radius: 30px;
-      padding: 24px 24px 22px;
-      background: rgba(255, 244, 247, 0.66);
-      border: 1px solid rgba(255, 240, 244, 0.8);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow: 0 26px 50px rgba(168, 128, 149, 0.2);
-      color: #886d7b;
-      opacity: 0;
-      transform: translateY(24px) scale(0.96);
-      pointer-events: none;
-      transition: opacity 0.34s ease, transform 0.34s ease;
+    .panel.show{
+      opacity:1;
+      transform:translateY(0) scale(1);
+      pointer-events:auto;
     }
 
-    .treehole-panel.show {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
+    .panel-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:10px;
     }
 
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 14px;
-      margin-bottom: 10px;
+    .panel-title{
+      font-size:28px;
+      font-weight:700;
+      color:#7d6270;
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
 
-    .panel-title {
-      font-size: 28px;
-      font-weight: 700;
-      color: #7d6170;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .panel-sub{
+      font-size:15px;
+      line-height:1.5;
+      color:#9b808d;
+      margin-bottom:14px;
     }
 
-    .panel-sub {
-      font-size: 15px;
-      line-height: 1.5;
-      color: #9b808d;
-      margin-bottom: 14px;
+    .close{
+      border:none;
+      background:transparent;
+      color:#aa8d9a;
+      font-size:28px;
+      line-height:1;
+      cursor:pointer;
     }
 
-    .close-btn {
-      background: transparent;
-      border: none;
-      color: #a88a98;
-      font-size: 28px;
-      line-height: 1;
-      cursor: pointer;
+    .panel textarea{
+      width:100%;
+      height:146px;
+      resize:none;
+      outline:none;
+      border-radius:20px;
+      border:1px solid rgba(232,215,221,.92);
+      background:rgba(255,251,252,.8);
+      padding:16px;
+      color:#7f6774;
+      font-size:15px;
+      line-height:1.7;
+      font-family:inherit;
+      margin-bottom:16px;
     }
 
-    .panel-box {
-      width: 100%;
-      height: 150px;
-      border: 1px solid rgba(232, 215, 221, 0.95);
-      background: rgba(255, 251, 252, 0.82);
-      border-radius: 20px;
-      padding: 16px;
-      resize: none;
-      outline: none;
-      color: #7f6774;
-      font-size: 15px;
-      line-height: 1.7;
-      font-family: inherit;
-      margin-bottom: 18px;
+    .panel textarea::placeholder{
+      color:#b59ca8;
     }
 
-    .panel-box::placeholder {
-      color: #b49ba7;
+    .panel-footer{
+      display:flex;
+      justify-content:flex-end;
     }
 
-    .panel-footer {
-      display: flex;
-      justify-content: flex-end;
+    .send{
+      border:none;
+      cursor:pointer;
+      padding:12px 24px;
+      border-radius:999px;
+      color:white;
+      font-size:15px;
+      font-weight:600;
+      background:linear-gradient(90deg,#f0bed1,#d88dad);
+      box-shadow:0 10px 22px rgba(216,141,173,.22);
     }
 
-    .send-btn {
-      border: none;
-      border-radius: 999px;
-      padding: 12px 26px;
-      background: linear-gradient(90deg, #f1bdd0, #d88dad);
-      color: white;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 10px 24px rgba(216, 141, 173, 0.25);
-    }
-
-    @keyframes pulse {
-      0% {
-        opacity: 0.55;
-        transform: scale(0.92);
+    @keyframes pulse{
+      0%{
+        opacity:.5;
+        transform:scale(.92);
       }
-      70% {
-        opacity: 0;
-        transform: scale(1.28);
+      70%{
+        opacity:0;
+        transform:scale(1.26);
       }
-      100% {
-        opacity: 0;
-        transform: scale(1.28);
+      100%{
+        opacity:0;
+        transform:scale(1.26);
       }
     }
 
-    @media (max-width: 1100px) {
-      .left {
-        width: 360px;
-        margin-left: 16px;
+    @media (max-width: 1100px){
+      .left{
+        width:370px;
+        margin-left:34px;
       }
 
-      h1 {
-        font-size: 58px;
+      h1{
+        font-size:58px;
       }
 
-      .treehole-panel {
-        width: 300px;
+      .panel{
+        width:300px;
       }
     }
 
-    @media (max-width: 900px) {
-      .page {
-        padding: 24px;
+    @media (max-width: 900px){
+      .page{
+        padding:24px;
       }
 
-      .left-blur {
-        width: 58%;
+      .left-fog{
+        width:58%;
       }
 
-      .content {
-        align-items: flex-start;
-        padding-top: 84px;
+      .left{
+        width:320px;
+        margin-left:8px;
       }
 
-      .left {
-        width: 320px;
-        margin-left: 0;
+      h1{
+        font-size:48px;
       }
 
-      h1 {
-        font-size: 48px;
+      .actions{
+        flex-direction:column;
+        width:100%;
       }
 
-      .action-row {
-        flex-direction: column;
-        width: 100%;
+      .soft-btn{
+        min-width:0;
+        width:100%;
       }
 
-      .soft-btn {
-        min-width: 0;
-        width: 100%;
-      }
-
-      .bubble-tip {
-        display: none;
+      .bubble-tip{
+        display:none;
       }
     }
   </style>
 </head>
 <body>
-  <div class="left-blur"></div>
+  <div class="left-fog"></div>
 
   <div class="page">
     <div class="logo">
@@ -513,20 +531,20 @@
       <span>LOGO</span>
     </div>
 
-    <div class="content">
+    <div class="layout">
       <section class="left">
         <div class="tag">FOREST ・ PSYCHOLOGY</div>
 
         <h1>
           Discover Your
           <span class="line2">Personality</span>
-          <span class="flower-swish"></span>
+          <span class="swish"></span>
         </h1>
 
         <p class="desc">Find out more about yourself with our test.</p>
 
-        <div class="divider"> </div>
-        <div class="subtext">당신의 성격을 알아보세요</div>
+        <div class="divider"></div>
+        <div class="sub">당신의 성격을 알아보세요</div>
 
         <button class="start-btn">
           <span class="sparkle">✦</span>
@@ -534,36 +552,34 @@
           <span>→</span>
         </button>
 
-        <div class="action-row">
-          <div class="soft-btn"><span class="icon">🍃</span><span>Personality Test</span></div>
-          <div class="soft-btn"><span class="icon">👥</span><span>Community Chat</span></div>
+        <div class="actions">
+          <div class="soft-btn"><span>🍃</span><span>Personality Test</span></div>
+          <div class="soft-btn"><span>👥</span><span>Community Chat</span></div>
         </div>
       </section>
 
-      <section class="right-side">
+      <section class="right">
         <div class="bubble-tip">
           向树洞倾诉…
           <span>把你的心里话放在这里</span>
         </div>
 
-        <button class="bubble" id="bubbleBtn" onclick="togglePanel()" aria-label="Open treehole panel">
+        <button class="bubble" onclick="togglePanel()" aria-label="Open treehole panel">
           <span class="bubble-icon">💬</span>
         </button>
 
-        <div class="treehole-panel" id="panel">
-          <div class="panel-header">
-            <div>
-              <div class="panel-title">🌸 向树洞倾诉</div>
-            </div>
-            <button class="close-btn" onclick="togglePanel()">×</button>
+        <div class="panel" id="panel">
+          <div class="panel-head">
+            <div class="panel-title">🌸 向树洞倾诉</div>
+            <button class="close" onclick="togglePanel()">×</button>
           </div>
 
           <div class="panel-sub">把你的心里话告诉这里吧 🌸</div>
 
-          <textarea class="panel-box" placeholder="今天发生了什么呢？"></textarea>
+          <textarea placeholder="今天发生了什么呢？"></textarea>
 
           <div class="panel-footer">
-            <button class="send-btn">发送</button>
+            <button class="send">发送</button>
           </div>
         </div>
       </section>
@@ -571,9 +587,8 @@
   </div>
 
   <script>
-    function togglePanel() {
-      const panel = document.getElementById('panel');
-      panel.classList.toggle('show');
+    function togglePanel(){
+      document.getElementById('panel').classList.toggle('show');
     }
   </script>
 </body>
