@@ -710,35 +710,50 @@
   <!-- jhammann/sakura 벚꽃 플러그인 JS -->
   <script src="https://cdn.jsdelivr.net/npm/sakura-js@1.1.1/dist/sakura.min.js"></script>
 
-  <script>
-    function togglePanel(){
-      document.getElementById('panel').classList.toggle('show');
-    }
+<script>
+  function togglePanel(){
+    document.getElementById('panel').classList.toggle('show');
+  }
 
-    const sakura = new Sakura('body', {
-      className: 'sakura',
-      fallSpeed: 1.1,
-      maxSize: 14,
-      minSize: 8,
-      delay: 260,
-      colors: [
-        {
-          gradientColorStart: 'rgba(255, 238, 245, 0.95)',
-          gradientColorEnd: 'rgba(255, 176, 207, 0.9)',
-          gradientColorDegree: 120,
-        },
-        {
-          gradientColorStart: 'rgba(255, 218, 231, 0.95)',
-          gradientColorEnd: 'rgba(233, 145, 183, 0.88)',
-          gradientColorDegree: 120,
-        },
-        {
-          gradientColorStart: 'rgba(255, 248, 251, 0.95)',
-          gradientColorEnd: 'rgba(246, 188, 213, 0.86)',
-          gradientColorDegree: 120,
-        }
-      ]
+  const sakura = new Sakura('body', {
+    className: 'sakura',
+    fallSpeed: 1.1,
+    maxSize: 14,
+    minSize: 8,
+    delay: 260,
+    colors: [
+      {
+        gradientColorStart: 'rgba(255, 238, 245, 0.95)',
+        gradientColorEnd: 'rgba(255, 176, 207, 0.9)',
+        gradientColorDegree: 120,
+      },
+      {
+        gradientColorStart: 'rgba(255, 218, 231, 0.95)',
+        gradientColorEnd: 'rgba(233, 145, 183, 0.88)',
+        gradientColorDegree: 120,
+      },
+      {
+        gradientColorStart: 'rgba(255, 248, 251, 0.95)',
+        gradientColorEnd: 'rgba(246, 188, 213, 0.86)',
+        gradientColorDegree: 120,
+      }
+    ]
+  });
+
+  // 清理掉停留在屏幕底部或屏幕外的樱花花瓣
+  setInterval(() => {
+    document.querySelectorAll('.sakura').forEach((petal) => {
+      const rect = petal.getBoundingClientRect();
+
+      if (
+        rect.top > window.innerHeight - 20 ||
+        rect.left < -80 ||
+        rect.left > window.innerWidth + 80
+      ) {
+        petal.remove();
+      }
     });
-  </script>
+  }, 500);
+</script>
 </body>
 </html>
