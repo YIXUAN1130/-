@@ -13,8 +13,6 @@
       --text-main:#866b79;
       --text-soft:#967d89;
       --line:rgba(215,186,198,.55);
-      --glass:rgba(255,245,248,.18);
-      --glass-soft:rgba(255,245,248,.08);
       --btn1:#cdbaf4;
       --btn2:#d98fad;
       --white-soft:rgba(255,250,251,.78);
@@ -38,7 +36,7 @@
       font-family:"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
       color:var(--text-main);
       background:
-        linear-gradient(rgba(255,244,248,.04), rgba(255,244,248,.04)),
+        linear-gradient(rgba(255,244,248,.03), rgba(255,244,248,.03)),
         url("./0.png") center center / cover no-repeat;
       overflow:hidden;
       position:relative;
@@ -51,53 +49,20 @@
       background:
         linear-gradient(
           to right,
-          rgba(255,246,249,.26) 0%,
-          rgba(255,246,249,.16) 30%,
-          rgba(255,246,249,.08) 52%,
-          rgba(255,246,249,.02) 68%,
+          rgba(255,246,249,.12) 0%,
+          rgba(255,246,249,.08) 28%,
+          rgba(255,246,249,.04) 52%,
+          rgba(255,246,249,.01) 68%,
           rgba(255,246,249,0) 100%
         );
       pointer-events:none;
       z-index:0;
     }
 
+    /* 벚꽃 플러그인 레이어 */
     .sakura{
       pointer-events:none !important;
       z-index:3 !important;
-    }
-
-    .left-fog{
-      position:absolute;
-      left:0;
-      top:0;
-      width:58%;
-      height:100%;
-      backdrop-filter:blur(30px);
-      -webkit-backdrop-filter:blur(30px);
-      background:
-        linear-gradient(
-          to right,
-          rgba(255,246,249,.34) 0%,
-          rgba(255,246,249,.22) 35%,
-          rgba(255,246,249,.1) 68%,
-          rgba(255,246,249,0) 100%
-        );
-      -webkit-mask-image:linear-gradient(
-        to right,
-        rgba(0,0,0,1) 0%,
-        rgba(0,0,0,.96) 52%,
-        rgba(0,0,0,.45) 82%,
-        rgba(0,0,0,0) 100%
-      );
-      mask-image:linear-gradient(
-        to right,
-        rgba(0,0,0,1) 0%,
-        rgba(0,0,0,.96) 52%,
-        rgba(0,0,0,.45) 82%,
-        rgba(0,0,0,0) 100%
-      );
-      pointer-events:none;
-      z-index:1;
     }
 
     .page{
@@ -148,16 +113,51 @@
     .left{
       width:420px;
       position:absolute;
-
-      /* 这里控制左侧文字区域位置 */
-      left:34%;
+      left:27%;
       top:40%;
-
       transform:translate(-50%, -50%);
       display:flex;
       flex-direction:column;
       align-items:flex-start;
       z-index:4;
+      isolation:isolate;
+    }
+
+    /* 只在文字附近的局部雾感 */
+    .left::before{
+      content:"";
+      position:absolute;
+      left:-72px;
+      top:-58px;
+      width:520px;
+      height:470px;
+      border-radius:52px;
+      z-index:-1;
+      pointer-events:none;
+      background:
+        radial-gradient(
+          ellipse at 36% 34%,
+          rgba(255,246,249,.18) 0%,
+          rgba(255,246,249,.11) 38%,
+          rgba(255,246,249,.05) 66%,
+          rgba(255,246,249,0) 100%
+        );
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      mask-image: radial-gradient(
+        ellipse at center,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,.88) 54%,
+        rgba(0,0,0,.40) 78%,
+        rgba(0,0,0,0) 100%
+      );
+      -webkit-mask-image: radial-gradient(
+        ellipse at center,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,.88) 54%,
+        rgba(0,0,0,.40) 78%,
+        rgba(0,0,0,0) 100%
+      );
     }
 
     .tag{
@@ -165,12 +165,12 @@
       align-items:center;
       padding:10px 18px;
       border-radius:999px;
-      background:rgba(255,247,250,.34);
-      border:1px solid rgba(233,213,221,.72);
+      background:rgba(255,247,250,.22);
+      border:1px solid rgba(233,213,221,.52);
       color:rgba(147,118,131,.8);
       font-size:13px;
       letter-spacing:2px;
-      backdrop-filter:blur(10px);
+      backdrop-filter:blur(8px);
       box-shadow:var(--shadow-soft);
       margin-bottom:28px;
     }
@@ -283,7 +283,7 @@
       min-width:184px;
       padding:14px 22px;
       border-radius:999px;
-      background:rgba(255,250,251,.78);
+      background:rgba(255,250,251,.62);
       border:1px solid var(--white-border);
       color:#8b7280;
       font-size:15px;
@@ -292,7 +292,7 @@
       align-items:center;
       justify-content:center;
       gap:10px;
-      backdrop-filter:blur(12px);
+      backdrop-filter:blur(10px);
       box-shadow:var(--shadow-soft);
       cursor:pointer;
       transition:.22s ease;
@@ -300,7 +300,7 @@
 
     .soft-btn:hover{
       transform:translateY(-2px);
-      background:rgba(255,250,251,.9);
+      background:rgba(255,250,251,.78);
     }
 
     .right{
@@ -338,8 +338,8 @@
       border:none;
       border-radius:50%;
       cursor:pointer;
-      background:rgba(255,246,249,.32);
-      border:1px solid rgba(255,240,244,.52);
+      background:rgba(255,246,249,.28);
+      border:1px solid rgba(255,240,244,.44);
       backdrop-filter:blur(18px);
       -webkit-backdrop-filter:blur(18px);
       box-shadow:0 10px 30px rgba(185,145,166,.16);
@@ -362,7 +362,7 @@
 
     .bubble:hover{
       transform:scale(1.08);
-      background:rgba(255,246,249,.42);
+      background:rgba(255,246,249,.40);
       box-shadow:0 14px 34px rgba(185,145,166,.22);
     }
 
@@ -391,8 +391,8 @@
       width:332px;
       border-radius:28px;
       padding:22px 22px 20px;
-      background:rgba(255,244,247,.58);
-      border:1px solid rgba(255,240,244,.78);
+      background:rgba(255,244,247,.50);
+      border:1px solid rgba(255,240,244,.72);
       backdrop-filter:blur(18px);
       -webkit-backdrop-filter:blur(18px);
       box-shadow:0 22px 48px rgba(168,128,149,.16);
@@ -449,7 +449,7 @@
       outline:none;
       border-radius:20px;
       border:1px solid rgba(232,215,221,.92);
-      background:rgba(255,251,252,.8);
+      background:rgba(255,251,252,.72);
       padding:16px;
       color:#7f6774;
       font-size:15px;
@@ -497,9 +497,16 @@
     @media (max-width: 1100px){
       .left{
         width:370px;
-        left:36%;
+        left:29%;
         top:40%;
         transform:translate(-50%, -50%);
+      }
+
+      .left::before{
+        left:-62px;
+        top:-50px;
+        width:460px;
+        height:430px;
       }
 
       h1{
@@ -521,10 +528,6 @@
         min-height:100vh;
       }
 
-      .left-fog{
-        width:70%;
-      }
-
       .layout{
         min-height:100vh;
         position:relative;
@@ -532,9 +535,16 @@
 
       .left{
         width:320px;
-        left:34%;
-        top:34%;
+        left:43%;
+        top:35%;
         transform:translate(-50%, -50%);
+      }
+
+      .left::before{
+        left:-48px;
+        top:-34px;
+        width:390px;
+        height:360px;
       }
 
       h1{
@@ -570,8 +580,6 @@
 </head>
 
 <body>
-  <div class="left-fog"></div>
-
   <div class="page">
     <div class="logo">
       <span class="logo-box"></span>
