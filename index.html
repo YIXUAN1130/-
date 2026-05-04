@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cherry Blossom Psychology</title>
+  <title>벚꽃 심리 테스트</title>
 
-  <!-- jhammann/sakura 樱花插件 CSS -->
+  <!-- jhammann/sakura 벚꽃 플러그인 CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakura-js@1.1.1/dist/sakura.min.css">
 
   <style>
@@ -35,7 +35,7 @@
     }
 
     body{
-      font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      font-family:"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
       color:var(--text-main);
       background:
         linear-gradient(rgba(255,244,248,.04), rgba(255,244,248,.04)),
@@ -61,7 +61,6 @@
       z-index:0;
     }
 
-    /* 樱花插件生成的花瓣层 */
     .sakura{
       pointer-events:none !important;
       z-index:3 !important;
@@ -71,7 +70,7 @@
       position:absolute;
       left:0;
       top:0;
-      width:48%;
+      width:58%;
       height:100%;
       backdrop-filter:blur(30px);
       -webkit-backdrop-filter:blur(30px);
@@ -143,20 +142,21 @@
     .layout{
       width:100%;
       height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
       position:relative;
     }
 
     .left{
       width:420px;
-      margin-left:86px;
-      margin-top:16px;
+      position:absolute;
+
+      /* 这里控制左侧文字区域位置 */
+      left:34%;
+      top:40%;
+
+      transform:translate(-50%, -50%);
       display:flex;
       flex-direction:column;
       align-items:flex-start;
-      position:relative;
       z-index:4;
     }
 
@@ -176,7 +176,7 @@
     }
 
     h1{
-      font-family:Georgia,"Times New Roman",serif;
+      font-family:Georgia,"Times New Roman","Apple SD Gothic Neo","Malgun Gothic",serif;
       font-size:68px;
       line-height:.96;
       font-weight:500;
@@ -216,7 +216,7 @@
       font-size:17px;
       line-height:1.65;
       color:var(--text-soft);
-      max-width:330px;
+      max-width:350px;
       margin-bottom:18px;
     }
 
@@ -304,10 +304,10 @@
     }
 
     .right{
-      flex:1;
-      height:100%;
-      position:relative;
+      position:absolute;
+      inset:0;
       z-index:4;
+      pointer-events:none;
     }
 
     .bubble-tip{
@@ -319,6 +319,7 @@
       text-shadow:0 2px 10px rgba(125,94,108,.14);
       font-size:14px;
       line-height:1.55;
+      pointer-events:auto;
     }
 
     .bubble-tip span{
@@ -347,6 +348,7 @@
       justify-content:center;
       transition:.22s ease;
       overflow:hidden;
+      pointer-events:auto;
     }
 
     .bubble::before{
@@ -416,7 +418,7 @@
     }
 
     .panel-title{
-      font-size:28px;
+      font-size:26px;
       font-weight:700;
       color:#7d6270;
       display:flex;
@@ -495,7 +497,9 @@
     @media (max-width: 1100px){
       .left{
         width:370px;
-        margin-left:34px;
+        left:36%;
+        top:40%;
+        transform:translate(-50%, -50%);
       }
 
       h1{
@@ -518,20 +522,24 @@
       }
 
       .left-fog{
-        width:58%;
+        width:70%;
       }
 
       .layout{
-        align-items:center;
+        min-height:100vh;
+        position:relative;
       }
 
       .left{
         width:320px;
-        margin-left:8px;
+        left:50%;
+        top:34%;
+        transform:translate(-50%, -50%);
       }
 
       h1{
-        font-size:48px;
+        font-size:42px;
+        line-height:1.15;
       }
 
       .actions{
@@ -547,6 +555,16 @@
       .bubble-tip{
         display:none;
       }
+
+      .bubble{
+        right:24px;
+        bottom:28px;
+      }
+
+      .panel{
+        right:24px;
+        bottom:122px;
+      }
     }
   </style>
 </head>
@@ -557,47 +575,49 @@
   <div class="page">
     <div class="logo">
       <span class="logo-box"></span>
-      <span>LOGO</span>
+      <span>마음숲</span>
     </div>
 
     <div class="layout">
       <section class="left">
-        <div class="tag">FOREST ・ PSYCHOLOGY</div>
+        <div class="tag">벚꽃 숲 ・ 심리 테스트</div>
 
         <h1>
-          Discover Your
-          <span class="line2">Personality</span>
+          나의 마음을
+          <span class="line2">알아보기</span>
           <span class="swish"></span>
         </h1>
 
-        <p class="desc">Find out more about yourself with our test.</p>
+        <p class="desc">
+          간단한 테스트를 통해 나의 성격과 감정 상태를 더 자세히 알아보세요.
+        </p>
 
         <div class="divider"></div>
-        <div class="sub">당신의 성격을 알아보세요</div>
+        <div class="sub">벚꽃이 흩날리는 숲에서 나를 만나는 시간</div>
 
         <button class="start-btn">
           <span class="sparkle">✦</span>
-          <span>Start Quiz</span>
+          <span>테스트 시작하기</span>
           <span>→</span>
         </button>
 
         <div class="actions">
           <div class="soft-btn">
             <span>🍃</span>
-            <span>Personality Test</span>
+            <span>성격 테스트</span>
           </div>
 
           <div class="soft-btn">
             <span>👥</span>
-            <span>Community Chat</span>
+            <span>익명 커뮤니티</span>
           </div>
         </div>
       </section>
 
       <section class="right">
         <div class="bubble-tip">
-          向树洞倾诉…
-          <span>把你的心里话放在这里</span>
+          마음을 털어놓기…
+          <span>하고 싶은 말을 이곳에 남겨보세요</span>
         </div>
 
         <button class="bubble" onclick="togglePanel()" aria-label="Open treehole panel">
@@ -606,23 +626,23 @@
 
         <div class="panel" id="panel">
           <div class="panel-head">
-            <div class="panel-title">🌸 向树洞倾诉</div>
+            <div class="panel-title">🌸 마음을 털어놓기</div>
             <button class="close" onclick="togglePanel()">×</button>
           </div>
 
-          <div class="panel-sub">把你的心里话告诉这里吧 🌸</div>
+          <div class="panel-sub">오늘의 마음을 조용히 남겨보세요 🌸</div>
 
-          <textarea placeholder="今天发生了什么呢？"></textarea>
+          <textarea placeholder="오늘은 어떤 일이 있었나요?"></textarea>
 
           <div class="panel-footer">
-            <button class="send">发送</button>
+            <button class="send">보내기</button>
           </div>
         </div>
       </section>
     </div>
   </div>
 
-  <!-- jhammann/sakura 樱花插件 JS -->
+  <!-- jhammann/sakura 벚꽃 플러그인 JS -->
   <script src="https://cdn.jsdelivr.net/npm/sakura-js@1.1.1/dist/sakura.min.js"></script>
 
   <script>
@@ -632,18 +652,10 @@
 
     const sakura = new Sakura('body', {
       className: 'sakura',
-
-      // 花瓣下落速度，数值越大越快
       fallSpeed: 1.1,
-
-      // 花瓣大小
       maxSize: 14,
       minSize: 8,
-
-      // 生成间隔，数值越小花瓣越多
       delay: 260,
-
-      // 花瓣颜色
       colors: [
         {
           gradientColorStart: 'rgba(255, 238, 245, 0.95)',
