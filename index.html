@@ -1,889 +1,667 @@
-import webbrowser
-from pathlib import Path
-
-html_code = r"""
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sakura Mind Test Main Page</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cherry Blossom Psychology</title>
 
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+  <!-- jhammann/sakura 樱花插件 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakura-js@1.1.1/dist/sakura.min.css">
 
-body {
-    min-height: 100vh;
-    overflow: hidden;
-    font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-    background: linear-gradient(
-        to bottom,
-        #ffeaf3 0%,
-        #ffd6e8 35%,
-        #f8bfd8 70%,
-        #eaa7c7 100%
-    );
-}
+  <style>
+    :root{
+      --text-main:#866b79;
+      --text-soft:#967d89;
+      --line:rgba(215,186,198,.55);
+      --glass:rgba(255,245,248,.18);
+      --glass-soft:rgba(255,245,248,.08);
+      --btn1:#cdbaf4;
+      --btn2:#d98fad;
+      --white-soft:rgba(255,250,251,.78);
+      --white-border:rgba(233,210,220,.7);
+      --shadow:0 16px 40px rgba(140,95,118,.16);
+      --shadow-soft:0 10px 28px rgba(140,95,118,.1);
+    }
 
-/* =========================
-   樱花动态背景层
-========================= */
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
 
-.sakura-bg {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
-}
+    html,body{
+      width:100%;
+      height:100%;
+    }
 
-.sun-glow {
-    position: absolute;
-    top: 6%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 460px;
-    height: 460px;
-    background: radial-gradient(
-        circle,
-        rgba(255,255,255,0.95),
-        rgba(255,210,230,0.35),
-        transparent 70%
-    );
-    filter: blur(10px);
-    z-index: 1;
-}
+    body{
+      font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      color:var(--text-main);
+      background:
+        linear-gradient(rgba(255,244,248,.04), rgba(255,244,248,.04)),
+        url("./0.png") center center / cover no-repeat;
+      overflow:hidden;
+      position:relative;
+    }
 
-.forest-back {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 48%;
-    background:
-        radial-gradient(circle at 8% 95%, #b86b91 0 8%, transparent 9%),
-        radial-gradient(circle at 22% 90%, #c47a9b 0 10%, transparent 11%),
-        radial-gradient(circle at 40% 94%, #b9688d 0 9%, transparent 10%),
-        radial-gradient(circle at 58% 89%, #c47a9b 0 11%, transparent 12%),
-        radial-gradient(circle at 76% 93%, #b86b91 0 10%, transparent 11%),
-        radial-gradient(circle at 92% 90%, #c47a9b 0 9%, transparent 10%);
-    opacity: 0.42;
-    filter: blur(2px);
-    z-index: 2;
-}
+    body::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(
+          to right,
+          rgba(255,246,249,.26) 0%,
+          rgba(255,246,249,.16) 30%,
+          rgba(255,246,249,.08) 52%,
+          rgba(255,246,249,.02) 68%,
+          rgba(255,246,249,0) 100%
+        );
+      pointer-events:none;
+      z-index:0;
+    }
 
-.ground {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 24%;
-    background: linear-gradient(to top, #7b4961, #b7708e, transparent);
-    z-index: 3;
-}
+    /* 樱花插件生成的花瓣层 */
+    .sakura{
+      pointer-events:none !important;
+      z-index:3 !important;
+    }
 
-.tree {
-    position: absolute;
-    bottom: 8%;
-    width: 220px;
-    height: 520px;
-    z-index: 4;
-    animation: treeSway 5s ease-in-out infinite alternate;
-    transform-origin: bottom center;
-}
-
-.tree.left {
-    left: 2%;
-}
-
-.tree.right {
-    right: 0%;
-    transform: scaleX(-1);
-}
-
-.trunk {
-    position: absolute;
-    bottom: 0;
-    left: 90px;
-    width: 38px;
-    height: 340px;
-    background: linear-gradient(to right, #4a2431, #7a3d4e, #3b1e2a);
-    border-radius: 40% 40% 20% 20%;
-    box-shadow: inset -8px 0 10px rgba(0,0,0,0.25);
-}
-
-.branch {
-    position: absolute;
-    background: #5b2b39;
-    border-radius: 30px;
-    transform-origin: left center;
-}
-
-.branch.b1 {
-    width: 150px;
-    height: 20px;
-    left: 105px;
-    bottom: 260px;
-    transform: rotate(-32deg);
-}
-
-.branch.b2 {
-    width: 130px;
-    height: 18px;
-    left: 95px;
-    bottom: 220px;
-    transform: rotate(35deg);
-}
-
-.branch.b3 {
-    width: 120px;
-    height: 16px;
-    left: 105px;
-    bottom: 310px;
-    transform: rotate(-8deg);
-}
-
-.blossom {
-    position: absolute;
-    width: 240px;
-    height: 180px;
-    border-radius: 50%;
-    background:
-        radial-gradient(circle at 30% 35%, #fff2f7 0 12%, transparent 13%),
-        radial-gradient(circle at 60% 30%, #ffd4e5 0 15%, transparent 16%),
-        radial-gradient(circle at 45% 60%, #ffb7d3 0 18%, transparent 19%),
-        radial-gradient(circle at 70% 65%, #ffc4dc 0 14%, transparent 15%),
-        radial-gradient(circle at 25% 70%, #ffdbea 0 14%, transparent 15%);
-    filter: drop-shadow(0 0 18px rgba(255, 180, 210, 0.8));
-    opacity: 0.95;
-}
-
-.blossom.c1 {
-    left: -15px;
-    bottom: 310px;
-}
-
-.blossom.c2 {
-    left: 60px;
-    bottom: 360px;
-    transform: scale(0.9);
-}
-
-.blossom.c3 {
-    left: 100px;
-    bottom: 280px;
-    transform: scale(0.85);
-}
-
-.wind-line {
-    position: absolute;
-    left: -30%;
-    width: 45%;
-    height: 2px;
-    background: linear-gradient(
+    .left-fog{
+      position:absolute;
+      left:0;
+      top:0;
+      width:48%;
+      height:100%;
+      backdrop-filter:blur(30px);
+      -webkit-backdrop-filter:blur(30px);
+      background:
+        linear-gradient(
+          to right,
+          rgba(255,246,249,.34) 0%,
+          rgba(255,246,249,.22) 35%,
+          rgba(255,246,249,.1) 68%,
+          rgba(255,246,249,0) 100%
+        );
+      -webkit-mask-image:linear-gradient(
         to right,
-        transparent,
-        rgba(255,255,255,0.65),
-        transparent
-    );
-    z-index: 5;
-    opacity: 0.45;
-    animation: windMove 7s linear infinite;
-}
-
-.wind-line.w1 {
-    top: 26%;
-    animation-delay: 0s;
-}
-
-.wind-line.w2 {
-    top: 43%;
-    animation-delay: 2s;
-}
-
-.wind-line.w3 {
-    top: 60%;
-    animation-delay: 4s;
-}
-
-.petal {
-    position: absolute;
-    top: -10%;
-    width: 14px;
-    height: 10px;
-    background: radial-gradient(circle at 30% 30%, #fff8fb, #ffb7d3 70%);
-    border-radius: 80% 20% 70% 30%;
-    opacity: 0.85;
-    z-index: 7;
-    animation-name: fall;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-}
-
-.leaf {
-    position: absolute;
-    top: -10%;
-    width: 18px;
-    height: 9px;
-    background: linear-gradient(45deg, #9ac78c, #5d9b62);
-    border-radius: 100% 0 100% 0;
-    opacity: 0.7;
-    z-index: 6;
-    animation-name: fall;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-}
-
-@keyframes fall {
-    0% {
-        transform: translate3d(0, -10vh, 0) rotate(0deg);
-    }
-    25% {
-        transform: translate3d(70px, 20vh, 0) rotate(120deg);
-    }
-    50% {
-        transform: translate3d(-45px, 50vh, 0) rotate(240deg);
-    }
-    75% {
-        transform: translate3d(100px, 75vh, 0) rotate(360deg);
-    }
-    100% {
-        transform: translate3d(-35px, 110vh, 0) rotate(520deg);
-    }
-}
-
-@keyframes treeSway {
-    from {
-        transform: rotate(-1deg);
-    }
-    to {
-        transform: rotate(1.5deg);
-    }
-}
-
-@keyframes windMove {
-    from {
-        left: -40%;
-        transform: translateY(0);
-    }
-    to {
-        left: 120%;
-        transform: translateY(-40px);
-    }
-}
-
-/* =========================
-   主页面内容层
-========================= */
-
-.main-page {
-    position: relative;
-    z-index: 10;
-    min-height: 100vh;
-    padding: 28px 44px;
-    color: white;
-}
-
-/* 顶部导航栏 */
-
-.navbar {
-    width: 100%;
-    height: 68px;
-    padding: 0 26px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 26px;
-    background: rgba(255, 255, 255, 0.22);
-    border: 1px solid rgba(255, 255, 255, 0.42);
-    backdrop-filter: blur(18px);
-    box-shadow: 0 14px 40px rgba(130, 45, 82, 0.18);
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-shadow: 0 4px 18px rgba(120, 40, 80, 0.38);
-}
-
-.logo-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 14px;
-    display: grid;
-    place-items: center;
-    background: rgba(255, 255, 255, 0.72);
-    color: #c65386;
-    box-shadow: 0 8px 22px rgba(120, 40, 80, 0.2);
-}
-
-.nav-links {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    font-size: 15px;
-}
-
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    opacity: 0.9;
-    transition: 0.25s;
-}
-
-.nav-links a:hover {
-    opacity: 1;
-    transform: translateY(-2px);
-}
-
-.lang-btn {
-    padding: 9px 18px;
-    border: none;
-    border-radius: 999px;
-    color: #b24e78;
-    background: rgba(255, 255, 255, 0.85);
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.25s;
-}
-
-.lang-btn:hover {
-    background: white;
-    transform: translateY(-2px);
-}
-
-/* 中央主内容 */
-
-.hero-wrap {
-    min-height: calc(100vh - 120px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.hero-card {
-    width: min(1060px, 92vw);
-    padding: 52px;
-    border-radius: 38px;
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.48);
-    backdrop-filter: blur(22px);
-    box-shadow:
-        0 26px 80px rgba(120, 40, 80, 0.28),
-        inset 0 1px 0 rgba(255, 255, 255, 0.45);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-card::before {
-    content: "";
-    position: absolute;
-    top: -120px;
-    left: -120px;
-    width: 280px;
-    height: 280px;
-    background: radial-gradient(circle, rgba(255,255,255,0.55), transparent 70%);
-    pointer-events: none;
-}
-
-.tag {
-    display: inline-block;
-    padding: 9px 18px;
-    margin-bottom: 22px;
-    border-radius: 999px;
-    font-size: 14px;
-    letter-spacing: 1px;
-    background: rgba(255, 255, 255, 0.28);
-    border: 1px solid rgba(255, 255, 255, 0.45);
-}
-
-.hero-card h1 {
-    font-size: 52px;
-    line-height: 1.2;
-    margin-bottom: 18px;
-    letter-spacing: 3px;
-    text-shadow: 0 5px 24px rgba(120, 40, 80, 0.45);
-}
-
-.hero-card .subtitle {
-    max-width: 720px;
-    margin: 0 auto;
-    font-size: 18px;
-    line-height: 1.8;
-    opacity: 0.92;
-    text-shadow: 0 3px 12px rgba(120, 40, 80, 0.28);
-}
-
-.feature-grid {
-    margin-top: 38px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 26px;
-}
-
-.feature-card {
-    padding: 30px;
-    border-radius: 30px;
-    background: rgba(255, 255, 255, 0.27);
-    border: 1px solid rgba(255, 255, 255, 0.42);
-    backdrop-filter: blur(16px);
-    box-shadow: 0 14px 40px rgba(120, 40, 80, 0.17);
-    text-align: left;
-    transition: 0.28s;
-}
-
-.feature-card:hover {
-    transform: translateY(-8px);
-    background: rgba(255, 255, 255, 0.34);
-}
-
-.feature-icon {
-    width: 54px;
-    height: 54px;
-    border-radius: 20px;
-    display: grid;
-    place-items: center;
-    font-size: 26px;
-    margin-bottom: 18px;
-    background: rgba(255, 255, 255, 0.78);
-    color: #c65386;
-    box-shadow: 0 10px 24px rgba(120, 40, 80, 0.18);
-}
-
-.feature-card h2 {
-    font-size: 27px;
-    margin-bottom: 12px;
-    text-shadow: 0 3px 14px rgba(120, 40, 80, 0.32);
-}
-
-.feature-card p {
-    font-size: 15px;
-    line-height: 1.7;
-    opacity: 0.88;
-}
-
-.feature-card button {
-    margin-top: 24px;
-    padding: 12px 28px;
-    border: none;
-    border-radius: 999px;
-    color: #b24e78;
-    background: rgba(255, 255, 255, 0.88);
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 8px 24px rgba(120, 40, 80, 0.22);
-    transition: 0.25s;
-}
-
-.feature-card button:hover {
-    background: white;
-    transform: translateY(-2px);
-}
-
-.bottom-note {
-    margin-top: 28px;
-    font-size: 14px;
-    opacity: 0.82;
-}
-
-/* 弹窗 */
-
-.modal-mask {
-    position: fixed;
-    inset: 0;
-    z-index: 30;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: rgba(90, 30, 60, 0.25);
-    backdrop-filter: blur(8px);
-}
-
-.modal {
-    width: min(440px, 88vw);
-    padding: 34px;
-    border-radius: 30px;
-    background: rgba(255, 255, 255, 0.88);
-    color: #9f3f6c;
-    text-align: center;
-    box-shadow: 0 24px 70px rgba(80, 20, 50, 0.32);
-    animation: popIn 0.32s ease;
-}
-
-.modal h3 {
-    font-size: 26px;
-    margin-bottom: 14px;
-}
-
-.modal p {
-    color: #8b5670;
-    line-height: 1.7;
-}
-
-.modal button {
-    margin-top: 24px;
-    padding: 11px 26px;
-    border: none;
-    border-radius: 999px;
-    background: #c65386;
-    color: white;
-    cursor: pointer;
-    font-weight: 700;
-}
-
-@keyframes popIn {
-    from {
-        opacity: 0;
-        transform: translateY(24px) scale(0.96);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-/* 响应式 */
-
-@media (max-width: 850px) {
-    body {
-        overflow-y: auto;
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,.96) 52%,
+        rgba(0,0,0,.45) 82%,
+        rgba(0,0,0,0) 100%
+      );
+      mask-image:linear-gradient(
+        to right,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,.96) 52%,
+        rgba(0,0,0,.45) 82%,
+        rgba(0,0,0,0) 100%
+      );
+      pointer-events:none;
+      z-index:1;
     }
 
-    .main-page {
-        padding: 18px;
+    .page{
+      position:relative;
+      z-index:2;
+      width:100%;
+      height:100%;
+      padding:34px 42px 42px;
     }
 
-    .navbar {
-        height: auto;
-        padding: 18px;
-        flex-direction: column;
-        gap: 14px;
+    .logo{
+      position:absolute;
+      left:46px;
+      top:34px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:19px;
+      font-weight:600;
+      letter-spacing:1px;
+      color:rgba(126,101,114,.82);
+      z-index:4;
     }
 
-    .nav-links {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 14px;
+    .logo-box{
+      width:22px;
+      height:22px;
+      border:2px solid rgba(126,101,114,.74);
+      border-radius:7px;
+      position:relative;
+      display:inline-block;
     }
 
-    .hero-wrap {
-        min-height: auto;
-        padding: 36px 0;
+    .logo-box::after{
+      content:"";
+      position:absolute;
+      inset:4px;
+      border:2px solid rgba(126,101,114,.45);
+      border-radius:4px;
     }
 
-    .hero-card {
-        padding: 34px 22px;
+    .layout{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      position:relative;
     }
 
-    .hero-card h1 {
-        font-size: 34px;
+    .left{
+      width:420px;
+      margin-left:86px;
+      margin-top:16px;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      position:relative;
+      z-index:4;
     }
 
-    .hero-card .subtitle {
-        font-size: 15px;
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      padding:10px 18px;
+      border-radius:999px;
+      background:rgba(255,247,250,.34);
+      border:1px solid rgba(233,213,221,.72);
+      color:rgba(147,118,131,.8);
+      font-size:13px;
+      letter-spacing:2px;
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow-soft);
+      margin-bottom:28px;
     }
 
-    .feature-grid {
-        grid-template-columns: 1fr;
+    h1{
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:68px;
+      line-height:.96;
+      font-weight:500;
+      letter-spacing:-1.2px;
+      color:#8c7180;
+      margin-bottom:22px;
+      position:relative;
     }
 
-    .tree {
-        opacity: 0.55;
-        transform: scale(0.78);
+    h1 .line2{
+      display:block;
+      margin-top:6px;
     }
 
-    .tree.left {
-        left: -60px;
+    .swish{
+      position:absolute;
+      left:116px;
+      bottom:-10px;
+      width:210px;
+      height:24px;
+      border-bottom:2px solid rgba(233,170,194,.62);
+      border-radius:0 0 160px 160px;
+      transform:rotate(-5deg);
+      opacity:.9;
     }
 
-    .tree.right {
-        right: -60px;
+    .swish::after{
+      content:"✿";
+      position:absolute;
+      right:-10px;
+      top:7px;
+      font-size:22px;
+      color:rgba(232,165,192,.85);
     }
-}
-</style>
+
+    .desc{
+      font-size:17px;
+      line-height:1.65;
+      color:var(--text-soft);
+      max-width:330px;
+      margin-bottom:18px;
+    }
+
+    .divider{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      color:rgba(152,125,137,.82);
+      font-size:15px;
+      margin:10px 0 14px;
+    }
+
+    .divider::before,
+    .divider::after{
+      content:"";
+      width:72px;
+      height:1px;
+      background:var(--line);
+    }
+
+    .sub{
+      font-size:15px;
+      color:var(--text-soft);
+      margin-bottom:28px;
+    }
+
+    .start-btn{
+      border:none;
+      cursor:pointer;
+      min-width:230px;
+      padding:16px 32px;
+      border-radius:999px;
+      color:#fff;
+      font-size:17px;
+      font-weight:600;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      background:linear-gradient(90deg,var(--btn1),var(--btn2));
+      box-shadow:0 14px 34px rgba(210,151,180,.25);
+      transition:.25s ease;
+      margin-bottom:28px;
+    }
+
+    .start-btn:hover{
+      transform:translateY(-2px);
+      filter:brightness(1.03);
+      box-shadow:0 18px 40px rgba(210,151,180,.3);
+    }
+
+    .start-btn .sparkle{
+      font-size:16px;
+      opacity:.95;
+    }
+
+    .actions{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .soft-btn{
+      min-width:184px;
+      padding:14px 22px;
+      border-radius:999px;
+      background:rgba(255,250,251,.78);
+      border:1px solid var(--white-border);
+      color:#8b7280;
+      font-size:15px;
+      font-weight:500;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      backdrop-filter:blur(12px);
+      box-shadow:var(--shadow-soft);
+      cursor:pointer;
+      transition:.22s ease;
+    }
+
+    .soft-btn:hover{
+      transform:translateY(-2px);
+      background:rgba(255,250,251,.9);
+    }
+
+    .right{
+      flex:1;
+      height:100%;
+      position:relative;
+      z-index:4;
+    }
+
+    .bubble-tip{
+      position:absolute;
+      right:140px;
+      bottom:64px;
+      text-align:right;
+      color:rgba(255,243,247,.92);
+      text-shadow:0 2px 10px rgba(125,94,108,.14);
+      font-size:14px;
+      line-height:1.55;
+    }
+
+    .bubble-tip span{
+      display:block;
+      font-size:13px;
+      margin-top:4px;
+      opacity:.92;
+    }
+
+    .bubble{
+      position:absolute;
+      right:42px;
+      bottom:38px;
+      width:84px;
+      height:84px;
+      border:none;
+      border-radius:50%;
+      cursor:pointer;
+      background:rgba(255,246,249,.32);
+      border:1px solid rgba(255,240,244,.52);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      box-shadow:0 10px 30px rgba(185,145,166,.16);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:.22s ease;
+      overflow:hidden;
+    }
+
+    .bubble::before{
+      content:"";
+      position:absolute;
+      inset:-8px;
+      border-radius:50%;
+      border:1px solid rgba(255,245,249,.34);
+      animation:pulse 2.6s infinite ease-out;
+    }
+
+    .bubble:hover{
+      transform:scale(1.08);
+      background:rgba(255,246,249,.42);
+      box-shadow:0 14px 34px rgba(185,145,166,.22);
+    }
+
+    .bubble:active{
+      transform:scale(.96);
+    }
+
+    .bubble-icon{
+      width:50px;
+      height:50px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg, rgba(255,220,230,.78), rgba(244,188,209,.72));
+      box-shadow:inset 0 2px 8px rgba(255,255,255,.28);
+      color:#fff;
+      font-size:22px;
+      z-index:1;
+    }
+
+    .panel{
+      position:absolute;
+      right:64px;
+      bottom:140px;
+      width:332px;
+      border-radius:28px;
+      padding:22px 22px 20px;
+      background:rgba(255,244,247,.58);
+      border:1px solid rgba(255,240,244,.78);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      box-shadow:0 22px 48px rgba(168,128,149,.16);
+      color:#866b79;
+      opacity:0;
+      transform:translateY(24px) scale(.96);
+      pointer-events:none;
+      transition:opacity .32s ease, transform .32s ease;
+    }
+
+    .panel.show{
+      opacity:1;
+      transform:translateY(0) scale(1);
+      pointer-events:auto;
+    }
+
+    .panel-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:10px;
+    }
+
+    .panel-title{
+      font-size:28px;
+      font-weight:700;
+      color:#7d6270;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .panel-sub{
+      font-size:15px;
+      line-height:1.5;
+      color:#9b808d;
+      margin-bottom:14px;
+    }
+
+    .close{
+      border:none;
+      background:transparent;
+      color:#aa8d9a;
+      font-size:28px;
+      line-height:1;
+      cursor:pointer;
+    }
+
+    .panel textarea{
+      width:100%;
+      height:146px;
+      resize:none;
+      outline:none;
+      border-radius:20px;
+      border:1px solid rgba(232,215,221,.92);
+      background:rgba(255,251,252,.8);
+      padding:16px;
+      color:#7f6774;
+      font-size:15px;
+      line-height:1.7;
+      font-family:inherit;
+      margin-bottom:16px;
+    }
+
+    .panel textarea::placeholder{
+      color:#b59ca8;
+    }
+
+    .panel-footer{
+      display:flex;
+      justify-content:flex-end;
+    }
+
+    .send{
+      border:none;
+      cursor:pointer;
+      padding:12px 24px;
+      border-radius:999px;
+      color:white;
+      font-size:15px;
+      font-weight:600;
+      background:linear-gradient(90deg,#f0bed1,#d88dad);
+      box-shadow:0 10px 22px rgba(216,141,173,.22);
+    }
+
+    @keyframes pulse{
+      0%{
+        opacity:.5;
+        transform:scale(.92);
+      }
+      70%{
+        opacity:0;
+        transform:scale(1.26);
+      }
+      100%{
+        opacity:0;
+        transform:scale(1.26);
+      }
+    }
+
+    @media (max-width: 1100px){
+      .left{
+        width:370px;
+        margin-left:34px;
+      }
+
+      h1{
+        font-size:58px;
+      }
+
+      .panel{
+        width:300px;
+      }
+    }
+
+    @media (max-width: 900px){
+      body{
+        overflow-y:auto;
+      }
+
+      .page{
+        padding:24px;
+        min-height:100vh;
+      }
+
+      .left-fog{
+        width:58%;
+      }
+
+      .layout{
+        align-items:center;
+      }
+
+      .left{
+        width:320px;
+        margin-left:8px;
+      }
+
+      h1{
+        font-size:48px;
+      }
+
+      .actions{
+        flex-direction:column;
+        width:100%;
+      }
+
+      .soft-btn{
+        min-width:0;
+        width:100%;
+      }
+
+      .bubble-tip{
+        display:none;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="left-fog"></div>
 
-<!-- 樱花动态背景 -->
-<div class="sakura-bg" id="sakuraBg">
-    <div class="sun-glow"></div>
-    <div class="forest-back"></div>
-
-    <div class="wind-line w1"></div>
-    <div class="wind-line w2"></div>
-    <div class="wind-line w3"></div>
-
-    <div class="tree left">
-        <div class="trunk"></div>
-        <div class="branch b1"></div>
-        <div class="branch b2"></div>
-        <div class="branch b3"></div>
-        <div class="blossom c1"></div>
-        <div class="blossom c2"></div>
-        <div class="blossom c3"></div>
+  <div class="page">
+    <div class="logo">
+      <span class="logo-box"></span>
+      <span>LOGO</span>
     </div>
 
-    <div class="tree right">
-        <div class="trunk"></div>
-        <div class="branch b1"></div>
-        <div class="branch b2"></div>
-        <div class="branch b3"></div>
-        <div class="blossom c1"></div>
-        <div class="blossom c2"></div>
-        <div class="blossom c3"></div>
+    <div class="layout">
+      <section class="left">
+        <div class="tag">FOREST ・ PSYCHOLOGY</div>
+
+        <h1>
+          Discover Your
+          <span class="line2">Personality</span>
+          <span class="swish"></span>
+        </h1>
+
+        <p class="desc">Find out more about yourself with our test.</p>
+
+        <div class="divider"></div>
+        <div class="sub">당신의 성격을 알아보세요</div>
+
+        <button class="start-btn">
+          <span class="sparkle">✦</span>
+          <span>Start Quiz</span>
+          <span>→</span>
+        </button>
+
+        <div class="actions">
+          <div class="soft-btn">
+            <span>🍃</span>
+            <span>Personality Test</span>
+          </div>
+
+          <div class="soft-btn">
+            <span>👥</span>
+            <span>Community Chat</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="right">
+        <div class="bubble-tip">
+          向树洞倾诉…
+          <span>把你的心里话放在这里</span>
+        </div>
+
+        <button class="bubble" onclick="togglePanel()" aria-label="Open treehole panel">
+          <span class="bubble-icon">💬</span>
+        </button>
+
+        <div class="panel" id="panel">
+          <div class="panel-head">
+            <div class="panel-title">🌸 向树洞倾诉</div>
+            <button class="close" onclick="togglePanel()">×</button>
+          </div>
+
+          <div class="panel-sub">把你的心里话告诉这里吧 🌸</div>
+
+          <textarea placeholder="今天发生了什么呢？"></textarea>
+
+          <div class="panel-footer">
+            <button class="send">发送</button>
+          </div>
+        </div>
+      </section>
     </div>
+  </div>
 
-    <div class="ground"></div>
-</div>
+  <!-- jhammann/sakura 樱花插件 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sakura-js@1.1.1/dist/sakura.min.js"></script>
 
-<!-- 主页面 -->
-<main class="main-page">
-    <nav class="navbar">
-        <div class="logo">
-            <div class="logo-icon">🌸</div>
-            <span id="logoText">Bloom Mind</span>
-        </div>
-
-        <div class="nav-links">
-            <a href="#" id="navHome">首页</a>
-            <a href="#" id="navTest">心理测试</a>
-            <a href="#" id="navCommunity">匿名社区</a>
-            <a href="#" id="navAbout">关于我们</a>
-            <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">한국어</button>
-        </div>
-    </nav>
-
-    <section class="hero-wrap">
-        <div class="hero-card">
-            <div class="tag" id="tagText">SAKURA MOOD TEST PLATFORM</div>
-
-            <h1 id="mainTitle">在樱花落下的风里，遇见真实的自己</h1>
-
-            <p class="subtitle" id="subtitle">
-                通过轻松的心理测试了解自己的情绪状态，也可以用随机身份进入匿名社区，
-                分享心情、留下想法，和陌生人进行温柔的交流。
-            </p>
-
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🧠</div>
-                    <h2 id="testTitle">心理测试</h2>
-                    <p id="testDesc">
-                        回答一组简单的问题，系统会根据你的选择生成性格倾向、
-                        情绪状态和适合你的建议。
-                    </p>
-                    <button onclick="openModal('test')" id="testBtn">开始测试</button>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">💬</div>
-                    <h2 id="communityTitle">匿名社区</h2>
-                    <p id="communityDesc">
-                        每次进入社区都会获得一个随机身份。你可以发表心情，
-                        也可以在别人的留言下进行评论。
-                    </p>
-                    <button onclick="openModal('community')" id="communityBtn">进入社区</button>
-                </div>
-            </div>
-
-            <div class="bottom-note" id="bottomNote">
-                风吹过时，花瓣会慢慢落下。移动鼠标可以让花瓣变多。
-            </div>
-        </div>
-    </section>
-</main>
-
-<!-- 弹窗 -->
-<div class="modal-mask" id="modalMask">
-    <div class="modal">
-        <h3 id="modalTitle">功能预览</h3>
-        <p id="modalText">这里之后可以连接你的正式页面。</p>
-        <button onclick="closeModal()" id="modalBtn">关闭</button>
-    </div>
-</div>
-
-<script>
-const sakuraBg = document.getElementById("sakuraBg");
-
-function createPetal() {
-    const petal = document.createElement("div");
-    petal.className = Math.random() > 0.16 ? "petal" : "leaf";
-
-    const left = Math.random() * 100;
-    const duration = 7 + Math.random() * 8;
-    const delay = Math.random() * 5;
-    const size = 8 + Math.random() * 13;
-    const blur = Math.random() * 1.5;
-
-    petal.style.left = left + "vw";
-    petal.style.animationDuration = duration + "s";
-    petal.style.animationDelay = delay + "s";
-    petal.style.width = size + "px";
-    petal.style.height = size * 0.7 + "px";
-    petal.style.filter = `blur(${blur}px)`;
-    petal.style.opacity = 0.42 + Math.random() * 0.5;
-
-    sakuraBg.appendChild(petal);
-
-    setTimeout(() => {
-        petal.remove();
-    }, (duration + delay) * 1000);
-}
-
-// 初始花瓣
-for (let i = 0; i < 80; i++) {
-    createPetal();
-}
-
-// 持续生成
-setInterval(() => {
-    for (let i = 0; i < 3; i++) {
-        createPetal();
+  <script>
+    function togglePanel(){
+      document.getElementById('panel').classList.toggle('show');
     }
-}, 650);
 
-// 鼠标移动模拟风变强
-document.addEventListener("mousemove", () => {
-    for (let i = 0; i < 3; i++) {
-        createPetal();
-    }
-});
+    const sakura = new Sakura('body', {
+      className: 'sakura',
 
-// 弹窗逻辑
-function openModal(type) {
-    const modalMask = document.getElementById("modalMask");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalText = document.getElementById("modalText");
+      // 花瓣下落速度，数值越大越快
+      fallSpeed: 1.1,
 
-    if (currentLang === "zh") {
-        if (type === "test") {
-            modalTitle.textContent = "心理测试页面";
-            modalText.textContent = "这里之后可以跳转到心理测试题目页面，比如 MBTI、情绪压力测试或性格分析测试。";
-        } else {
-            modalTitle.textContent = "匿名社区页面";
-            modalText.textContent = "这里之后可以连接到匿名留言板，让用户用随机身份发布心情和评论。";
+      // 花瓣大小
+      maxSize: 14,
+      minSize: 8,
+
+      // 生成间隔，数值越小花瓣越多
+      delay: 260,
+
+      // 花瓣颜色
+      colors: [
+        {
+          gradientColorStart: 'rgba(255, 238, 245, 0.95)',
+          gradientColorEnd: 'rgba(255, 176, 207, 0.9)',
+          gradientColorDegree: 120,
+        },
+        {
+          gradientColorStart: 'rgba(255, 218, 231, 0.95)',
+          gradientColorEnd: 'rgba(233, 145, 183, 0.88)',
+          gradientColorDegree: 120,
+        },
+        {
+          gradientColorStart: 'rgba(255, 248, 251, 0.95)',
+          gradientColorEnd: 'rgba(246, 188, 213, 0.86)',
+          gradientColorDegree: 120,
         }
-    } else {
-        if (type === "test") {
-            modalTitle.textContent = "심리 테스트 페이지";
-            modalText.textContent = "나중에 MBTI, 감정 스트레스 테스트, 성격 분석 테스트 페이지로 연결할 수 있습니다.";
-        } else {
-            modalTitle.textContent = "익명 커뮤니티 페이지";
-            modalText.textContent = "나중에 랜덤 닉네임으로 글과 댓글을 작성하는 익명 게시판으로 연결할 수 있습니다.";
-        }
-    }
-
-    modalMask.style.display = "flex";
-}
-
-function closeModal() {
-    document.getElementById("modalMask").style.display = "none";
-}
-
-// 中韩语言切换
-let currentLang = "zh";
-
-function toggleLanguage() {
-    if (currentLang === "zh") {
-        currentLang = "ko";
-
-        document.documentElement.lang = "ko";
-        document.getElementById("logoText").textContent = "Bloom Mind";
-        document.getElementById("navHome").textContent = "홈";
-        document.getElementById("navTest").textContent = "심리 테스트";
-        document.getElementById("navCommunity").textContent = "익명 커뮤니티";
-        document.getElementById("navAbout").textContent = "소개";
-        document.getElementById("langBtn").textContent = "中文";
-
-        document.getElementById("tagText").textContent = "SAKURA MOOD TEST PLATFORM";
-        document.getElementById("mainTitle").textContent = "벚꽃이 흩날리는 바람 속에서 진짜 나를 만나다";
-        document.getElementById("subtitle").textContent =
-            "가벼운 심리 테스트를 통해 나의 감정 상태를 알아보고, 랜덤 익명으로 커뮤니티에 들어가 마음을 공유할 수 있습니다.";
-
-        document.getElementById("testTitle").textContent = "심리 테스트";
-        document.getElementById("testDesc").textContent =
-            "간단한 질문에 답하면 성격 경향, 감정 상태, 그리고 나에게 어울리는 조언을 확인할 수 있습니다.";
-        document.getElementById("testBtn").textContent = "테스트 시작";
-
-        document.getElementById("communityTitle").textContent = "익명 커뮤니티";
-        document.getElementById("communityDesc").textContent =
-            "매번 다른 랜덤 신분으로 접속하여 마음을 남기고, 다른 사람의 글에 댓글을 달 수 있습니다.";
-        document.getElementById("communityBtn").textContent = "커뮤니티 입장";
-
-        document.getElementById("bottomNote").textContent =
-            "바람이 불면 꽃잎이 천천히 떨어집니다. 마우스를 움직이면 꽃잎이 더 많이 나타납니다.";
-        document.getElementById("modalBtn").textContent = "닫기";
-
-    } else {
-        currentLang = "zh";
-
-        document.documentElement.lang = "zh-CN";
-        document.getElementById("logoText").textContent = "Bloom Mind";
-        document.getElementById("navHome").textContent = "首页";
-        document.getElementById("navTest").textContent = "心理测试";
-        document.getElementById("navCommunity").textContent = "匿名社区";
-        document.getElementById("navAbout").textContent = "关于我们";
-        document.getElementById("langBtn").textContent = "한국어";
-
-        document.getElementById("tagText").textContent = "SAKURA MOOD TEST PLATFORM";
-        document.getElementById("mainTitle").textContent = "在樱花落下的风里，遇见真实的自己";
-        document.getElementById("subtitle").textContent =
-            "通过轻松的心理测试了解自己的情绪状态，也可以用随机身份进入匿名社区，分享心情、留下想法，和陌生人进行温柔的交流。";
-
-        document.getElementById("testTitle").textContent = "心理测试";
-        document.getElementById("testDesc").textContent =
-            "回答一组简单的问题，系统会根据你的选择生成性格倾向、情绪状态和适合你的建议。";
-        document.getElementById("testBtn").textContent = "开始测试";
-
-        document.getElementById("communityTitle").textContent = "匿名社区";
-        document.getElementById("communityDesc").textContent =
-            "每次进入社区都会获得一个随机身份。你可以发表心情，也可以在别人的留言下进行评论。";
-        document.getElementById("communityBtn").textContent = "进入社区";
-
-        document.getElementById("bottomNote").textContent =
-            "风吹过时，花瓣会慢慢落下。移动鼠标可以让花瓣变多。";
-        document.getElementById("modalBtn").textContent = "关闭";
-    }
-}
-</script>
-
+      ]
+    });
+  </script>
 </body>
 </html>
-"""
-
-file_path = Path("sakura_main_page.html")
-file_path.write_text(html_code, encoding="utf-8")
-
-print("网页已生成：sakura_main_page.html")
-print("如果浏览器没有自动打开，请手动双击该 HTML 文件。")
-
-webbrowser.open(file_path.resolve().as_uri())
-"""
-
-file_path = Path("sakura_main_page.py")
-file_path.write_text(
-    """import webbrowser
-from pathlib import Path
-
-html_code = r'''""" + html_code + """'''
-
-file_path = Path("sakura_main_page.html")
-file_path.write_text(html_code, encoding="utf-8")
-
-print("网页已生成：sakura_main_page.html")
-print("如果浏览器没有自动打开，请手动双击该 HTML 文件。")
-
-webbrowser.open(file_path.resolve().as_uri())
-""",
-    encoding="utf-8"
-)
-
-print("Python 文件已生成：sakura_main_page.py")
